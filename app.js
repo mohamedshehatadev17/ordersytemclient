@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API_BASE_URL = "https://localhost:7192";
+  const API_BASE_URL = "https://orderingsystem.runasp.net";
   const KEYS = { access: "dispatch.accessToken", refresh: "dispatch.refreshToken", customer: "dispatch.customer", deletes: "dispatch.deleteAudit" };
   const state = {
     apiBase: API_BASE_URL,
