@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dispatch | Customer order desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <main id="authView" class="auth-layout">
+    <section class="auth-intro"><p class="eyebrow">ORDER MANAGEMENT / 01</p><h1>Move every order<br><em>forward.</em></h1><p class="intro-copy">A focused workspace for customers to create, track, and manage their orders in one place.</p><div class="intro-rule"></div><p class="mono-note">SECURE CUSTOMER ACCESS<br>JWT AUTHENTICATION ENABLED</p></section>
+    <section class="auth-card"><div class="auth-heading"><span class="status-badge">CUSTOMER PORTAL</span><h2>Welcome back.</h2><p>Sign in to your order desk or create a new account.</p></div><div class="auth-tabs" role="tablist"><button class="auth-tab is-active" id="tabLogin" role="tab" aria-selected="true" type="button">Sign in</button><button class="auth-tab" id="tabRegister" role="tab" aria-selected="false" type="button">Create account</button></div>
+      <form id="loginForm" class="auth-form"><div class="field"><label for="loginEmail">Email address</label><input id="loginEmail" type="email" required autocomplete="username" placeholder="you@example.com"></div><div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Enter your password"></div><button class="btn btn-dark btn-block" type="submit">Sign in <span class="arrow">→</span></button><p class="form-note" id="loginNote"></p><button class="text-button" id="goToRegister" type="button" hidden>Create an account instead</button></form>
+      <form id="registerForm" class="auth-form" hidden><div class="field"><label for="regName">Full name</label><input id="regName" type="text" required autocomplete="name" placeholder="Alex Morgan"></div><div class="field"><label for="regEmail">Email address</label><input id="regEmail" type="email" required autocomplete="email" placeholder="you@example.com"></div><div class="field"><label for="regPassword">Password</label><input id="regPassword" type="password" required autocomplete="new-password" placeholder="Create a secure password"></div><button class="btn btn-dark btn-block" type="submit">Create account <span class="arrow">→</span></button><p class="form-note" id="registerNote"></p><button class="text-button" id="goToLogin" type="button" hidden>Sign in instead</button></form>
+    </section>
+  </main>
+  <main id="ordersView" class="dashboard" hidden>
+    <section class="dashboard-head"><div><p class="eyebrow">CUSTOMER ORDER DESK / 02</p><h1>Good to see you, <span id="customerName">customer</span>.</h1><p class="dashboard-sub">Your orders, in one clear view.</p></div><div class="account-box"><span class="avatar" id="customerInitial">C</span><div><strong id="customerEmail">Signed in customer</strong><small id="customerIdLabel">Customer ID unavailable</small></div><button class="icon-button" id="signOutBtn" type="button" title="Sign out" aria-label="Sign out">↗</button></div></section>
+    <div class="metrics"><div class="metric"><span class="metric-label">ACTIVE ORDERS</span><strong id="activeCount">0</strong><small>currently placed</small></div><div class="metric"><span class="metric-label">ORDER VALUE</span><strong id="orderValue">$0.00</strong><small>across your orders</small></div><div class="metric metric-alert" id="banMetric"><span class="metric-label">ORDER ACCESS</span><strong id="accessStatus">Available</strong><small id="accessDetail">No restrictions</small></div></div>
+    <div class="workspace-grid"><section class="panel create-panel"><div class="panel-heading"><div><span class="section-number">01</span><h2>Place an order</h2></div><span class="route-label">POST /api/orders</span></div><form id="orderForm" class="order-form"><div class="field"><label for="ordCustomerId">Customer ID</label><input id="ordCustomerId" type="text" required placeholder="Provided after sign in"></div><div class="field"><label for="ordAmount">Order amount</label><input id="ordAmount" type="number" min="0" step="0.01" required placeholder="0.00"></div><button class="btn btn-dark btn-block" id="orderSubmitBtn" type="submit">Place order <span class="arrow">→</span></button><p class="form-note" id="orderNote"></p></form></section>
+      <section class="panel orders-panel"><div class="panel-heading"><div><span class="section-number">02</span><h2>Your orders</h2></div><div class="panel-actions"><span class="route-label" id="orderCount">0 orders</span><button class="icon-button" id="refreshOrders" type="button" title="Refresh orders" aria-label="Refresh orders">↻</button></div></div><div class="table-wrap"><table class="orders-table"><thead><tr><th>ORDER</th><th>CUSTOMER</th><th>AMOUNT</th><th>STATUS</th><th>ORDER DATE</th><th></th></tr></thead><tbody id="ordersBody"></tbody></table><div class="empty-state" id="emptyState" hidden><span class="empty-mark">—</span><strong>No orders yet</strong><span>Your newly placed orders will appear here.</span></div></div></section></div>
+  </main>
+  <div class="modal-backdrop" id="orderModal" hidden>
+    <section class="order-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header"><div><span class="section-number">ORDER DETAILS</span><h2 id="modalTitle">Order</h2></div><button class="icon-button" id="closeModal" type="button" aria-label="Close dialog">×</button></div>
+      <div class="modal-details"><div><span>ORDER ID</span><strong id="modalOrderId">-</strong></div><div><span>CUSTOMER ID</span><strong id="modalCustomerId">-</strong></div><div><span>ORDER DATE</span><strong id="modalOrderDate">-</strong></div></div>
+      <form id="editOrderForm" hidden><div class="field"><label for="modalAmount">Amount</label><input id="modalAmount" type="number" min="0" step="0.01" required></div><div class="field"><label for="modalStatus">Status</label><select id="modalStatus"><option value="0">Pending</option><option value="1">Processing</option><option value="2">Completed</option><option value="3">Cancelled</option></select></div><button class="btn btn-dark btn-block" id="saveOrderBtn" type="submit">Save changes <span class="arrow">→</span></button><p class="form-note" id="modalNote"></p></form>
+      <div id="viewOrderDetails"><div class="modal-value"><span>AMOUNT</span><strong id="modalAmountValue">$0.00</strong></div><div class="modal-value"><span>STATUS</span><strong id="modalStatusValue">-</strong></div></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
